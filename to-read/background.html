@@ -1,0 +1,39 @@
+<html>
+<head>
+<script>
+  // Called when the user clicks on the browser action.
+  chrome.browserAction.onClicked.addListener(function(tab) {
+    getBookmarkByTitle("To Read", function(bookmark, title) {
+      // Randomly display one of the To Read folders children
+      var random_id = Math.floor(Math.random()*bookmark.children.length);
+      var random_bookmark = bookmark.children[random_id];
+      chrome.tabs.create({url:random_bookmark.url});
+    });
+  });
+
+  // Recursively search through a tree of bookmarks.
+  function searchTreeByTitle(tree, title, success) {
+    var i;
+    var current_bookmark;
+    for (i = 0; i < tree.length; i++) {
+      current_bookmark = tree[i];
+      if (title === current_bookmark.title) {
+        success(current_bookmark, title);
+      }
+      // Recurse through the bookmarks children
+      if (current_bookmark.children) {
+        searchTreeByTitle(current_bookmark.children, title, success);
+      }
+    }
+  }
+
+  // Given a bookmark title, search all bookmarks calling the success callback if it's found.
+  function getBookmarkByTitle(title, success) {
+    chrome.bookmarks.getTree(function (tree) {
+      searchTreeByTitle(tree, title, success);
+    });
+  }
+  
+</script>
+</head>
+</html>
