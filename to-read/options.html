@@ -1,0 +1,38 @@
+<html>
+<head><title>To Read Options</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript">
+
+// Saves options to localStorage.
+function save_options() {
+  var defaults = {
+    "remove_read_bookmarks": false,
+    "bookmarks_folder_name": "To Read"
+  };
+  var saved_options = JSON.parse(localStorage['options'] || "{}");
+  var options = $.extend(defaults, saved_options);
+  localStorage['options'] = JSON.stringify(options);
+}
+
+// Restores select box state to saved value from localStorage.
+function restore_options() {
+}
+
+</script>
+</head>
+
+<body onload="restore_options()">
+<div class="fields">
+  <div class="field">
+    <label for="remove_old_bookmark">Remove bookmark after reading?</label>
+    <input type="checkbox" name="remove_old_bookmark" id="remove_old_bookmark" value="true" />
+  </div>
+  <div class="field">
+    <label for="remove_old_bookmark_checkbox">Get bookmarks from folder? </label>
+    <input type="text" name="bookmarks_folder_name" id="bookmarks_folder_name" value="To Read" />
+  </div>
+</div>
+
+<button onclick="save_options()">Save</button>
+</body>
+</html>
