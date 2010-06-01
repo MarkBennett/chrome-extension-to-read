@@ -3,11 +3,16 @@
 <script>
   // Called when the user clicks on the browser action.
   chrome.browserAction.onClicked.addListener(function(tab) {
+    var options = getOptions();
     getBookmarkByTitle("To Read", function(bookmark, title) {
       // Randomly display one of the To Read folders children
       var random_id = Math.floor(Math.random()*bookmark.children.length);
       var random_bookmark = bookmark.children[random_id];
-      chrome.tabs.create({url:random_bookmark.url});
+      chrome.tabs.create({url:random_bookmark.url}, function() {
+        if (options["remove_read_bookmarks"]) {
+          chrome.bookmarks.remove(random_bookmark.id);
+        }
+      });
     });
   });
 
@@ -32,6 +37,10 @@
     chrome.bookmarks.getTree(function (tree) {
       searchTreeByTitle(tree, title, success);
     });
+  }
+
+  function getOptions() {
+    return JSON.parse(localStorage['options']);
   }
   
 </script>
