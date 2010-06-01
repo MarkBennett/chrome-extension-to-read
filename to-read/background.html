@@ -1,9 +1,10 @@
 <html>
 <head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script>
   // Called when the user clicks on the browser action.
   chrome.browserAction.onClicked.addListener(function(tab) {
-    var options = getOptions();
+    var options = loadOptions();
     getBookmarkByTitle("To Read", function(bookmark, title) {
       // Randomly display one of the To Read folders children
       var random_id = Math.floor(Math.random()*bookmark.children.length);
@@ -38,11 +39,18 @@
       searchTreeByTitle(tree, title, success);
     });
   }
-
-  function getOptions() {
-    return JSON.parse(localStorage['options']);
+   
+  function loadOptions() {
+    var saved_options = JSON.parse(localStorage['options'] || "{}");
+    var defaults = {
+      "remove_read_bookmarks": false,
+      "bookmarks_folder_name": "To Read"
+    };
+    var options = $.extend(defaults, saved_options);
+    return options;
   }
-  
+
+ 
 </script>
 </head>
 </html>

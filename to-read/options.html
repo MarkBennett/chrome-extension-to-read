@@ -5,10 +5,6 @@
 
 // Saves options to localStorage.
 function save_options() {
-  var defaults = {
-    "remove_read_bookmarks": false,
-    "bookmarks_folder_name": "To Read"
-  };
   var displayed_options = {};
   var options;
 
@@ -18,20 +14,25 @@ function save_options() {
   displayed_options["bookmarks_folder_name"] = $("#bookmarks_folder_name").attr("value");
 
   // Merge the default, saved, and displayed options then save again
-  options = $.extend(defaults, displayed_options);
+  options = $.extend(loadOptions(), displayed_options);
   localStorage['options'] = JSON.stringify(options);
 }
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
-  var saved_options = localStorage['options'];
-  if (saved_options) {
-    saved_options = JSON.parse(saved_options);
-  }
-
   // Populate the form with the saved options
   $("#remove_read_bookmarks").attr("checked", saved_options['remove_read_bookmarks']);
   $("#bookmarks_folder_name").attr("value", saved_options['bookmarks_folder_name']);
+}
+
+function loadOptions() {
+  var saved_options = JSON.parse(localStorage['options'] || "{}");
+  var defaults = {
+    "remove_read_bookmarks": false,
+    "bookmarks_folder_name": "To Read"
+  };
+  var options = $.extend(defaults, saved_options);
+  return options;
 }
 
 </script>
